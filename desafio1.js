@@ -1,3 +1,6 @@
+let id = 0;
+
+
 class ProductManager {
     constructor(title, description, price, thumbnail, code, stock, id) {
         this.products = [],
@@ -20,7 +23,7 @@ class ProductManager {
                 
             }
         }
-        product.id = Math.random().toString(6);
+        product.id = ++id;
         this.products.push(product);
         return this.products;
     }
