@@ -52,13 +52,51 @@ class ProductManager {
     let resultado = await fs.promises.readFile(this.filename);
     let parsedRes = await JSON.parse(resultado);
 
-    for (const item of parsedRes) {
-      if (item.id === id) {
-        return console.log(item.title);
-      } else return console.error("Id no encontrado");
+    const filteredArr = parsedRes.find(
+        // compare id param vs id from products array
+        (product) => product.id == id
+      )
+      if(filteredArr){
+        console.log(filteredArr);
+        return filteredArr
+      } else {
+        console.log(`El producto con id: ${id} no existe`)
+        return ""
+      }
     }
   };
-}
+
+
+  updateProductById = async (id, updatedData) => {
+    let resultado = await fs.promises.readFile(this.filename)
+    let parsedRes = await JSON.parse(resultado)
+
+    if (await this.getProductById(id)) {
+      const newArr = parsedRes.map((item) => {
+          return id == item.id ? { ...item, ...updatedData } : item
+        })
+        await fs.promises.writeFile(this.filename, JSON.stringify(newArr))
+        console.log('Producto actualizado correctamente')
+    } else {
+      console.log(`El producto con id: ${id} no existe`)
+    }
+  };
+
+  deleteProductById = async (id) => {
+    let resultado = await fs.promises.readFile(this.filename)
+    let parsedRes = await JSON.parse(resultado)
+
+    if (await this.getProductById(id)) {
+      const newArr = parsedRes.filter((item) => item.id !== id)
+      await fs.promises.writeFile(this.filename, JSON.stringify(newArr))
+      console.log('Producto eliminado')
+    } else {
+      console.log(`El producto con id: ${id} no existe`)
+    }
+  }
+
+
+
 
 // Pruebas
 
@@ -66,23 +104,23 @@ const producto1 = new ProductManager("/products.json");
 
 // console.log("Agrego un producto");
 
-  producto1.addProduct({
-    title: "titulo1",
-    description: "descripcion1",
-    price: 1000,
-    thumbnail: "sin imagen",
-    code: "1234",
-    stock: 2,
-});
+//   producto1.addProduct({
+//     title: "titulo1",
+//     description: "descripcion1",
+//     price: 1000,
+//     thumbnail: "sin imagen",
+//     code: "1234",
+//     stock: 2,
+// });
 
-producto1.addProduct({
-  title: "titulo2",
-  description: "descripcion2",
-  price: 200,
-  thumbnail: "sin imagen",
-  code: "1235",
-  stock: 22,
-});
+// producto1.addProduct({
+//   title: "titulo2",
+//   description: "descripcion2",
+//   price: 200,
+//   thumbnail: "sin imagen",
+//   code: "1235",
+//   stock: 22,
+// });
 
 // console.log("Lista con producto1");
 // producto1.getProducts();
@@ -94,13 +132,12 @@ producto1.addProduct({
 // console.log(producto1.addProduct({ title: 'titulo1', description: 'descripcion1', price: 1000, thumbnail: 'sin imagen', code: '1234', stock: 2 }));
 
 // console.log("Busco un producto por id y funciona");
-// console.log(producto1.getProductById(1));
+// console.log(producto1.getProductById(2));
 
 // console.log("Busco un producto por id y no funciona");
 // console.log(producto1.getProductById(1235));
 
-// console.log("Agrego otro producto");
-
+// Atualizo el producto
 
 // console.log('Lista con producto2 agregado');
 // console.log(producto1.getProducts());
