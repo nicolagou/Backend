@@ -1,10 +1,10 @@
-let id = 0;
-
 
 class ProductManager {
+
+    static id = 0;
+
     constructor() {
-        this.products = [],
-        this.id = 0;
+        this.products = []
     }
 
     addProduct(product) {
@@ -16,7 +16,7 @@ class ProductManager {
             } 
             
         }
-        product.id = ++id;
+        product.id = ++ProductManager.id;
         this.products.push(product);
         return this.products;
     }
